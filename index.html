@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Einkaufsliste</title>
-  <meta name="description" content="Einfache Einkaufsliste – funktioniert offline auf Handy und Computer.">
+  <meta name="description" content="Einkaufsliste mit Geschäften, Preisvergleich und mehreren Listen – für Handy und Computer.">
   <meta name="theme-color" content="#16a34a">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -16,35 +16,115 @@
 </head>
 <body>
   <header class="top">
-    <h1>🛒 Einkaufsliste</h1>
-    <span id="counter" class="counter" aria-live="polite"></span>
+    <button id="list-btn" class="list-btn" type="button" aria-label="Liste wechseln">
+      <span id="list-name">Einkaufsliste</span> <span class="caret">▾</span>
+    </button>
+    <button id="settings-btn" class="icon-btn" type="button" aria-label="Einstellungen">
+      <span id="sync-dot" class="sync-dot" hidden></span>⚙︎
+    </button>
   </header>
+  <p id="summary" class="summary" aria-live="polite"></p>
 
   <main>
     <form id="add-form" class="add-form" autocomplete="off">
-      <input id="item-input" type="text" placeholder="Was brauchst du? z.B. 2 Milch" aria-label="Neuer Artikel" list="suggestions" enterkeyhint="done" required>
-      <datalist id="suggestions"></datalist>
-      <button type="submit" aria-label="Hinzufügen">＋</button>
+      <div class="add-row">
+        <input id="item-input" type="text" placeholder="Was brauchst du? z.B. Milch" aria-label="Neuer Artikel" list="suggestions" enterkeyhint="done" required>
+        <datalist id="suggestions"></datalist>
+        <button type="submit" class="add-btn" aria-label="Hinzufügen">＋</button>
+      </div>
+      <div class="add-row">
+        <div class="stepper" aria-label="Anzahl">
+          <button type="button" data-step="-1" data-target="qty-input" aria-label="Weniger">−</button>
+          <input id="qty-input" type="number" min="1" max="999" value="1" inputmode="numeric" aria-label="Anzahl">
+          <button type="button" data-step="1" data-target="qty-input" aria-label="Mehr">+</button>
+        </div>
+        <select id="store-input" aria-label="Geschäft"></select>
+      </div>
     </form>
 
-    <ul id="open-list" class="list"></ul>
+    <nav id="store-filter" class="chips" aria-label="Nach Geschäft filtern"></nav>
+
+    <div id="open-groups"></div>
 
     <section id="done-section" class="done-section" hidden>
-      <div class="done-header">
+      <div class="group-header">
         <h2>Erledigt</h2>
-        <button id="clear-done" class="link-btn" type="button">Erledigte löschen</button>
+        <button id="clear-done" class="link-btn danger-text" type="button">Erledigte löschen</button>
       </div>
       <ul id="done-list" class="list done"></ul>
     </section>
 
-    <p id="empty" class="empty">Deine Liste ist leer. Füge oben etwas hinzu!</p>
+    <p id="empty" class="empty">Diese Liste ist leer. Füge oben etwas hinzu!</p>
   </main>
+
+  <!-- Artikel bearbeiten -->
+  <dialog id="item-dialog" class="sheet">
+    <form id="item-form">
+      <h2>Artikel</h2>
+      <label class="field">Name
+        <input id="ed-name" type="text" required>
+      </label>
+      <div class="field-row">
+        <label class="field">Anzahl
+          <div class="stepper">
+            <button type="button" data-step="-1" data-target="ed-qty" aria-label="Weniger">−</button>
+            <input id="ed-qty" type="number" min="1" max="999" inputmode="numeric">
+            <button type="button" data-step="1" data-target="ed-qty" aria-label="Mehr">+</button>
+          </div>
+        </label>
+        <label class="field grow">Geschäft
+          <select id="ed-store"></select>
+        </label>
+      </div>
+      <label class="field">Notiz
+        <input id="ed-note" type="text" placeholder="z.B. Bio, 500 g, Marke …">
+      </label>
+
+      <h3>Preise <small>pro Stück</small></h3>
+      <div id="ed-prices" class="prices"></div>
+
+      <div class="actions">
+        <button type="button" id="ed-delete" class="btn danger">Löschen</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" data-close>Abbrechen</button>
+        <button type="submit" class="btn primary">Speichern</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Listen -->
+  <dialog id="lists-dialog" class="sheet">
+    <h2>Meine Listen</h2>
+    <ul id="lists-ul" class="entries"></ul>
+    <form id="new-list-form" class="inline-form" autocomplete="off">
+      <input id="new-list-name" type="text" placeholder="Neue Liste, z.B. Grillfeier" required>
+      <button type="submit" class="btn primary">Anlegen</button>
+    </form>
+    <div class="actions"><span class="spacer"></span><button type="button" class="btn" data-close>Fertig</button></div>
+  </dialog>
+
+  <!-- Einstellungen -->
+  <dialog id="settings-dialog" class="sheet">
+    <h2>Einstellungen</h2>
+
+    <h3>Geräte verbinden</h3>
+    <div id="sync-box" class="sync-box"></div>
+
+    <h3>Geschäfte</h3>
+    <ul id="stores-ul" class="entries"></ul>
+    <form id="new-store-form" class="inline-form" autocomplete="off">
+      <input id="new-store-name" type="text" placeholder="Geschäft hinzufügen" required>
+      <button type="submit" class="btn primary">＋</button>
+    </form>
+
+    <div class="actions"><span class="spacer"></span><button type="button" class="btn" data-close>Fertig</button></div>
+  </dialog>
 
   <div id="toast" class="toast" hidden>
     <span id="toast-text"></span>
     <button id="toast-undo" type="button">Rückgängig</button>
   </div>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
