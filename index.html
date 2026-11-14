@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Einkaufsliste</title>
+  <meta name="description" content="Einfache Einkaufsliste – funktioniert offline auf Handy und Computer.">
+  <meta name="theme-color" content="#16a34a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Einkauf">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>🛒 Einkaufsliste</h1>
+    <span id="counter" class="counter" aria-live="polite"></span>
+  </header>
+
+  <main>
+    <form id="add-form" class="add-form" autocomplete="off">
+      <input id="item-input" type="text" placeholder="Was brauchst du? z.B. 2 Milch" aria-label="Neuer Artikel" list="suggestions" enterkeyhint="done" required>
+      <datalist id="suggestions"></datalist>
+      <button type="submit" aria-label="Hinzufügen">＋</button>
+    </form>
+
+    <ul id="open-list" class="list"></ul>
+
+    <section id="done-section" class="done-section" hidden>
+      <div class="done-header">
+        <h2>Erledigt</h2>
+        <button id="clear-done" class="link-btn" type="button">Erledigte löschen</button>
+      </div>
+      <ul id="done-list" class="list done"></ul>
+    </section>
+
+    <p id="empty" class="empty">Deine Liste ist leer. Füge oben etwas hinzu!</p>
+  </main>
+
+  <div id="toast" class="toast" hidden>
+    <span id="toast-text"></span>
+    <button id="toast-undo" type="button">Rückgängig</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
