@@ -4,7 +4,7 @@ Einkaufslisten-App für **Handy und Computer**, gebaut als Progressive Web App
 (PWA). Sie läuft im Browser, lässt sich auf dem Handy wie eine normale App auf
 den Startbildschirm legen und funktioniert auch **offline**.
 
-👉 **App öffnen:** <https://yugito-11.github.io/einkaufsliste/>
+👉 **App öffnen:** <https://yugito-11.github.io/Einkaufsliste/>
 (sobald GitHub Pages eingeschaltet ist, siehe unten)
 
 ## Funktionen
@@ -35,7 +35,7 @@ den Startbildschirm legen und funktioniert auch **offline**.
 
 Repository → **Settings → Pages** → Source: „Deploy from a branch“,
 Branch `main`, Ordner `/ (root)` → **Save**. Nach 1–2 Minuten ist die App
-unter <https://yugito-11.github.io/einkaufsliste/> erreichbar.
+unter <https://yugito-11.github.io/Einkaufsliste/> erreichbar.
 
 ## Geräte verbinden (einmalig einrichten)
 
